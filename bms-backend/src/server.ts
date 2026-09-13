@@ -1,42 +1,44 @@
 import { Server } from "socket.io";
+import http from "http";
+
 import app from "./app";
 import { config } from "./config/config";
 import connectDB from "./config/db";
 import "./config/redis";
-import http from "http";
 import { registerSocketHandlers } from "./socket/sockethandlers";
 
-const startServer = async () => {
-  const port = config.port;
+const httpServer = http.createServer(app);
 
-  // Connect to database
+const io = new Server(httpServer, {
+  cors: {
+    origin: config.frontendUrl,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("✅ User connected: ", socket.id);
+
+  registerSocketHandlers(socket, io);
+
+  socket.on("disconnect", (reason) => {
+    console.log("❌ User disconnected: ", socket.id, "Reason", reason);
+  });
+});
+
+const startServer = async () => {
   await connectDB();
 
-  // Create HTTP server from Express app
-  const httpServer = http.createServer(app);
+  const port = config.port;
 
-  // Create Socket.IO server
-  const io = new Server(httpServer, {
-    cors: {
-      origin: config.frontendUrl,
-      methods: ["GET", "POST"],
-      credentials: true,
-    },
-  });
-
-  io.on("connection", (socket) => {
-    console.log("✅ User connected: ", socket.id);
-
-    registerSocketHandlers(socket, io);
-
-    socket.on("disconnect", (reason) => {
-      console.log("❌ User disconnected: ", socket.id, "Reason", reason);
+  if (!process.env.VERCEL) {
+    httpServer.listen(port, () => {
+      console.log(`Listening on port ${port}`);
     });
-  });
-
-  httpServer.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-  });
+  }
 };
 
 startServer();
+
+export default httpServer;
