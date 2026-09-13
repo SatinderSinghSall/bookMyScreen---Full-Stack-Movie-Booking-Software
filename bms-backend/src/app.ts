@@ -1,20 +1,23 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+
 import router from "./routes";
 import { globalErrorHandler } from "./middlewares/error.middleware";
+import { config } from "./config/config";
 
-dotenv.config();
+// Development - npm run dev
+// Production - npm run build & npm start
 
 const app = express();
 
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:5173"],
+    origin: config.frontendUrl,
   }),
 );
+
 app.use(cookieParser());
 app.use(express.json());
 

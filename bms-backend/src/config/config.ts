@@ -1,6 +1,10 @@
 import { config as conf } from "dotenv";
 
-conf();
+const env = process.env.NODE_ENV || "development";
+
+conf({
+  path: `.env.${env}`,
+});
 
 const _config = {
   port: process.env.PORT,
@@ -14,13 +18,14 @@ const _config = {
   emailUsername: process.env.NODEMAILER_EMAIL as string,
   emailPassword: process.env.NODEMAILER_PASSWORD as string,
 
-  redisHost: process.env.REDIS_HOST as string,
-  redisPort: parseInt(process.env.REDIS_PORT || "6379"),
+  redisUrl: process.env.REDIS_URL as string,
 
   razorpayKey: process.env.RAZORPAY_API_KEY as string,
   razorpaySecret: process.env.RAZORPAY_SECRET_KEY as string,
 
   databaseReplicaSet: process.env.MONGO_REPLICA_STRING as string,
+
+  frontendUrl: process.env.FRONTEND_URL as string,
 };
 
 export const config = Object.freeze(_config);

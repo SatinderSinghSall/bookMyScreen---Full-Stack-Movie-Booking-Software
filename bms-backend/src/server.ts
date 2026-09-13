@@ -9,16 +9,16 @@ import { registerSocketHandlers } from "./socket/sockethandlers";
 const startServer = async () => {
   const port = config.port;
 
-  // Connet to database
+  // Connect to database
   await connectDB();
 
   // Create HTTP server from Express app
   const httpServer = http.createServer(app);
 
-  // Create socket.io server
+  // Create Socket.IO server
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: config.frontendUrl,
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -26,6 +26,7 @@ const startServer = async () => {
 
   io.on("connection", (socket) => {
     console.log("✅ User connected: ", socket.id);
+
     registerSocketHandlers(socket, io);
 
     socket.on("disconnect", (reason) => {
@@ -34,7 +35,7 @@ const startServer = async () => {
   });
 
   httpServer.listen(port, () => {
-    console.log(`Listening on port: ${port}`);
+    console.log(`Listening on port ${port}`);
   });
 };
 

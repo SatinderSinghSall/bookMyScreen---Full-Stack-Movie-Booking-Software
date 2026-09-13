@@ -4,11 +4,11 @@
   "description": "Movie Booking System",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "cross-env NODE_ENV=development nodemon",
     "build": "tsc",
-    "start": "node dist/server.ts",
-    "seed:theaters": "ts-node src/scripts/seed-theaters.ts",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
     "seed:movies": "ts-node src/scripts/seed-movies.ts",
+    "seed:theaters": "ts-node src/scripts/seed-theaters.ts",
     "seed:shows": "ts-node src/scripts/seed-shows.ts"
   },
   "author": "Satinder Singh Sall",
@@ -38,6 +38,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.10",
     "@types/nodemailer": "^6.4.17",
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
