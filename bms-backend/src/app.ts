@@ -5,11 +5,21 @@ import cookieParser from "cookie-parser";
 import router from "./routes";
 import { globalErrorHandler } from "./middlewares/error.middleware";
 import { config } from "./config/config";
+import connectDB from "./config/db";
 
 // Development - npm run dev
 // Production - npm run build & npm start
 
 const app = express();
+
+app.use(async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use(
   cors({
