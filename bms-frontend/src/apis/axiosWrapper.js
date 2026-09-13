@@ -6,7 +6,7 @@ const defaultHeader = {
 };
 
 export const axiosWrapper = axios.create({
-  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api/v1`,
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
   headers: { ...defaultHeader },
 });
